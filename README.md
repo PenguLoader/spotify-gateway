@@ -1,7 +1,7 @@
 # spotify-gateway
 Spotify auth gateway for League Loader plugins
 
-https://spotify.leagueloader.app
+Try it now: https://spotify.leagueloader.app/login
 
 ## Getting started
 
@@ -16,7 +16,7 @@ const url = 'https://spotify.leagueloader.app/?scope=' + encodeURIComponent(sope
 window.open(url);
 ```
 - Check out [scopes here](https://developer.spotify.com/documentation/general/guides/authorization/scopes), leave with empty to access public data only.
-- If redirect URI is empty, you will get response directly from this endpoint and ignore the next step.
+- If redirect URI is empty, you will get response directly from `/callback` endpoint and ignore the next step.
 
 After authorized, the web browser will redirect to your set redirect URI. Decode and parse the base64 data to get **access token** and **refresh token**:
 ```
