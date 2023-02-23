@@ -3,7 +3,7 @@ import * as queryString from "https://deno.land/x/querystring@v1.0.2/mod.js";
 import { load } from "https://deno.land/std@0.177.0/dotenv/mod.ts";
 import { Base64 } from "https://deno.land/x/bb64@1.1.0/mod.ts";
 
-if (!Deno.env.has('SPOTIFY_CLIENT_ID')) {
+if (!Deno.env.get('SPOTIFY_CLIENT_ID')) {
   const env = await load();
   for (const k in env) {
     Deno.env.set(k, env[k]);
