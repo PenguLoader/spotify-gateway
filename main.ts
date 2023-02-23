@@ -29,10 +29,10 @@ router.get('/login', ({ request, response }) => {
   const redirectUri = request.url.searchParams.get('redirect_uri');
   const scope = (request.url.searchParams.get('scope') || '').split(' ');
 
-  if (scope.length == 0) {
-    scope.push('user-read-private');
-    scope.push('user-read-email');
-  }
+  // if (scope.length == 0) {
+  //   scope.push('user-read-private');
+  //   scope.push('user-read-email');
+  // }
 
   callbackMap.set(state, redirectUri || '');
 
