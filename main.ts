@@ -29,22 +29,20 @@ router.get('/login', ({ request, response }) => {
   const redirectUri = request.url.searchParams.get('redirect_uri');
   const scope = (request.url.searchParams.get('scope') || '').split(' ');
 
-  if (redirectUri) {
-    if (scope.length == 0) {
-      scope.push('user-read-private');
-      scope.push('user-read-email');
-    }
-    callbackMap.set(state, redirectUri);
-    response.redirect('https://accounts.spotify.com/authorize?' + queryString.stringify({
-      response_type: 'code',
-      client_id: SPOTIFY_CLIENT_ID,
-      scope: scope.join(' '),
-      redirect_uri: request.url.origin + '/callback',
-      state: state
-    }));
-  } else {
-    response.body = 'Invalid redirect URI.'
+  if (scope.length == 0) {
+    scope.push('user-read-private');
+    scope.push('user-read-email');
   }
+
+  callbackMap.set(state, redirectUri || '');
+
+  response.redirect('https://accounts.spotify.com/authorize?' + queryString.stringify({
+    response_type: 'code',
+    client_id: SPOTIFY_CLIENT_ID,
+    scope: scope.join(' '),
+    redirect_uri: request.url.origin + '/callback',
+    state: state
+  }));
 });
 
 router.get('/callback', async ({ request, response }) => {
@@ -67,16 +65,21 @@ router.get('/callback', async ({ request, response }) => {
         'Authorization': `Basic ${(Base64.fromString(`${SPOTIFY_CLIENT_ID}:${SPOTIFY_CLIENT_SECRET}`).toString())}`,
         'Content-Type': 'application/x-www-form-urlencoded'
       },
-    })
+    });
 
     if (resp.ok) {
       const data = await resp.json();
-      response.redirect(queryString.stringifyUrl({
-        url: redirectUri!,
-        query: {
-          data: Base64.fromString(JSON.stringify(data)).toString()
-        }
-      }));
+
+      if (!redirectUri) {
+        response.body = data;
+      } else {
+        response.redirect(queryString.stringifyUrl({
+          url: redirectUri!,
+          query: {
+            data: Base64.fromString(JSON.stringify(data)).toString()
+          }
+        }));
+      }
     } else {
       response.body = 'Failed to get access token.'
     }
