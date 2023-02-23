@@ -19,6 +19,10 @@ const randomString = (length: number) =>
 const callbackMap = new Map<string, string>();
 
 const router = new Router();
+router.get('/', ({ response }) => {
+  response.body = 'Hello, use GET /login to get your access token :)'
+});
+
 router.get('/login', ({ request, response }) => {
 
   const state = randomString(16);
