@@ -8,12 +8,15 @@ Try it now: https://spotify.leagueloader.app/login
 Create an URL and open it in the web browser.
 
 ```js
-const sope = ['some-scope', ...];
-const redirectUri = 'https://...';
+const scopes = ['scope-1', 'scope-2', ...];
+const redirectURI = 'https://...';
 
-const url = 'https://spotify.leagueloader.app/?scope=' + encodeURIComponent(sope.join(' '))
-  + '&redirect_uri=' + encodeURIComponent(redirectUri);
-window.open(url);
+const query = new URLSearchParams({
+  scope: scopes.join(' '),
+  redirect_uri: redirectURI
+});
+
+window.open('https://spotify.leagueloader.app/login?' + query.toString());
 ```
 - Check out [scopes here](https://developer.spotify.com/documentation/general/guides/authorization/scopes), leave with empty to access public data only.
 - If redirect URI is empty, you will get response directly from `/callback` endpoint and ignore the next step.
@@ -44,6 +47,40 @@ Response JSON:
    "token_type": "Bearer",
    "scope": "user-read-private user-read-email",
    "expires_in": 3600
+}
+```
+
+## League Loader plugin example
+
+Require League Loader v1.0.1 (coming soon).
+
+```js
+// Create callback URI with AuthCallback
+const callbackURL = AuthCallback.createURL();
+
+// Build token request URL with our gateway
+const scopes = [/* put needed scopes here */];
+const query = new URLSearchParams({
+  scope: scopes.join(' '),
+  redirect_uri: callbackURL
+});
+
+// League Client will open this URL in web browser
+window.open('https://spotify.leagueloader.app/login?' + query.toString());
+
+// Wait for authorized, or 180s (timeout) by default
+const response = await AuthCallback.readResponse(callbackURL /*, 180000 */);
+
+if (response === null) {
+  // handle timeout/error
+} else {
+  const params = new URLSearchParams(response);
+  const data = JSON.parse(window.atob(params.get('data')));
+  if (data.access_token) {
+    // found access token
+  } else {
+    // fail
+  }
 }
 ```
 
