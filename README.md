@@ -84,6 +84,12 @@ if (response === null) {
 }
 ```
 
+After finished the auth flow, the web browser will close opened tab and redirect to your Client.<br>
+You should bring Client window into foreground using this API:
+```js
+fetch('/riotclient/ux-show', { method: 'POST' });
+```
+
 ## How to build your own server?
 
 1. Fork this repo
