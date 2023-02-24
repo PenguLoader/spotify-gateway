@@ -20,10 +20,12 @@ const callbackMap = new Map<string, string>();
 
 const router = new Router();
 router.get('/', ({ response }) => {
+  response.headers.set('Access-Control-Allow-Origin', '*');
   response.body = 'Hello, use GET /login to get your access token :)'
 });
 
 router.get('/login', ({ request, response }) => {
+  response.headers.set('Access-Control-Allow-Origin', '*');
 
   const state = randomString(16);
   const redirectUri = request.url.searchParams.get('redirect_uri');
@@ -46,6 +48,7 @@ router.get('/login', ({ request, response }) => {
 });
 
 router.get('/callback', async ({ request, response }) => {
+  response.headers.set('Access-Control-Allow-Origin', '*');
 
   const code = request.url.searchParams.get('code');
   const state = request.url.searchParams.get('state');
@@ -89,6 +92,8 @@ router.get('/callback', async ({ request, response }) => {
 });
 
 router.get('/refresh', async ({ request, response }) => {
+  response.headers.set('Access-Control-Allow-Origin', '*');
+  
   const refreshToken = request.url.searchParams.get('refresh_token');
   if (refreshToken) {
     const resp = await fetch('https://accounts.spotify.com/api/token', {
